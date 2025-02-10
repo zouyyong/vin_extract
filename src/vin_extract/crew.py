@@ -1,8 +1,11 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
-from crewai_tools import VisionTool
+from crewai_tools import OCRTool, VisionTool
 
-# If you want to run a snippet of code before or after the crew starts, 
+from src.vin_extract.tools.vin_tool import VinTool
+
+
+# If you want to run a snippet of code before or after the crew starts,
 # you can use the @before_kickoff and @after_kickoff decorators
 # https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
 
@@ -18,7 +21,11 @@ class VinExtract():
 	agents_config = 'config/agents.yaml'
 	tasks_config = 'config/tasks.yaml'
 
-	vision_tool = VisionTool(image_path_url="vin.jpeg")
+	# set image path
+	image_path = "/Users/yzou/projects/crewai/vin_extract/vin.jpeg"
+
+	vin_tool = VinTool(image_path_url=image_path)
+	ocr_tool = OCRTool()
 
 	# If you would like to add tools to your agents, you can learn more about it here:
 	# https://docs.crewai.com/concepts/agents#agent-tools
@@ -26,7 +33,7 @@ class VinExtract():
 	def researcher(self) -> Agent:
 		return Agent(
 			config=self.agents_config['researcher'],
-			tools=[self.vision_tool],
+			tools=[self.ocr_tool],
 			verbose=True
 		)
 
